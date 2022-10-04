@@ -13,10 +13,21 @@
 <meta property="og:site_name" content="jettt&#39;s blog">
 <meta property="og:description" content="CodeQL library for Java - CodeQL About the CodeQL library for Java There is an extensive library for analyzing CodeQL databases extracted from Java projects. The classes in this library present the da">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/Untitled.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/Untitled%201.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/Untitled%202.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/Untitled%203.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/Untitled%204.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/Untitled%205.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/Untitled%206.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/Untitled%207.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/Untitled%208.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/Untitled%209.png">
 <meta property="article:published_time" content="2022-10-04T06:06:02.000Z">
-<meta property="article:modified_time" content="2022-10-04T06:14:30.425Z">
+<meta property="article:modified_time" content="2022-10-04T07:43:16.616Z">
 <meta property="article:author" content="jettt">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/Untitled.png">
     
     
       
@@ -206,9 +217,9 @@
 </ul>
 </li>
 </ul>
+<img src="/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/Untitled.png" class="" alt="Untitled">
 
-
-
+<img src="/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/Untitled%201.png" class="" alt="Untitled">
 
 <p>最后，QL库中还有其他 代表Java标准库中的类 的类：<code>TypeObject</code>, <code>TypeCloneable</code>, <code>TypeRuntime</code>, <code>TypeSerializable</code>, <code>TypeString</code>, <code>TypeSystem</code> and <code>TypeClass</code>. 顾名思义，每一个QL类都表示其类名代表的Java标准类。</p>
 <p>以下示例表示查询 直接继承Object类的内部类</p>
@@ -255,7 +266,7 @@
 <p>查询一个参数 v，where v的type是</p>
 <p>（回顾一下getSourceDeclaration：如果想通过ParameterizedType 找到其对应的GenericType ，你可以使用谓词getSourceDeclaration）</p>
 <p>看看查询结果：（这个Map map）</p>
-
+<img src="/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/Untitled%202.png" class="" alt="Untitled">
 
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">method</span><span class="params">(Map map)</span>&#123;</span><br><span class="line">	<span class="comment">//一个方法，传入的参数是类型为Map的map</span></span><br><span class="line">	<span class="comment">//假如有泛型的话，可能就是 Map&lt;String, N&gt; map</span></span><br><span class="line">	<span class="comment">//然后某个参数getType后得到的可能就是String，大概。</span></span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -273,9 +284,9 @@
 <li><code>ParameterizedMethod</code> ，参数化方法，对应的时参数化类型<code>ParameterizedType</code></li>
 <li><code>RawMethod</code>,中文我也不知道翻译，原生方法？对应<code>RawType</code></li>
 </ul>
+<img src="/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/Untitled%203.png" class="" alt="Untitled">
 
-
-
+<img src="/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/Untitled%204.png" class="" alt="Untitled">
 
 <p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/iyangyuan/archive/2013/04/09/3011274.html">https://www.cnblogs.com/iyangyuan/archive/2013/04/09/3011274.html</a></p>
 <h3 id="Variables"><a href="#Variables" class="headerlink" title="Variables"></a>Variables</h3><p>类<code>Variables</code>，就是Java中的变量。同时表示字段、本地变量或者参数。有三个子类：</p>
@@ -295,10 +306,10 @@
 <p>示例，以下查询finds 所有父节点是<code>return</code> 的expressions</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java</span><br><span class="line"></span><br><span class="line">from Expr e</span><br><span class="line">where e.getParent() <span class="keyword">instanceof</span> ReturnStmt</span><br><span class="line">select e</span><br><span class="line"><span class="comment">//https://lgtm.com/query/1947757851560375919/</span></span><br></pre></td></tr></table></figure>
 
-
+<img src="/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/Untitled%205.png" class="" alt="Untitled">
 
 <p>conf.get(USER_NAME)是expressions？</p>
-
+<img src="/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/Untitled%206.png" class="" alt="Untitled">
 
 <p>“success”也是？</p>
 <blockquote>
@@ -310,12 +321,12 @@
 <p>下面这个查询会找出所有父节点是<code>if</code> statement的statement</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java</span><br><span class="line"></span><br><span class="line">from Stmt s</span><br><span class="line">where s.getParent() <span class="keyword">instanceof</span> IfStmt</span><br><span class="line">select s</span><br></pre></td></tr></table></figure>
 
-
+<img src="/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/Untitled%207.png" class="" alt="Untitled">
 
 <p>最后，下面这个例子查询所有方法体：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java</span><br><span class="line"></span><br><span class="line">from Stmt s</span><br><span class="line">where s.getParent() <span class="keyword">instanceof</span> Method</span><br><span class="line">select s</span><br></pre></td></tr></table></figure>
 
-
+<img src="/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/Untitled%208.png" class="" alt="Untitled">
 
 <p>上述几个例子展示了一个expression的父节点不一定都是expression：它还可能是一个statement，比如IfStmt。同样的，一个statement的父节点也可能是方法或者构造函数。为了覆盖到这种问题，QL Java库提供了两个抽象类<code>ExprParent</code> and <code>StmtParent</code>,前者代表了任何<strong>可能</strong>是expression的父节点的节点，后者代表了任何<strong>可能</strong>是statement的父节点的节点。</p>
 <p>For more information on working with AST classes, see the <a target="_blank" rel="noopener" href="https://codeql.github.com/docs/codeql-language-guides/overflow-prone-comparisons-in-java/">article on overflow-prone comparisons in Java</a>.</p>
@@ -324,7 +335,7 @@
 <p>示例，下列查询找出所有构造方法的注解</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java</span><br><span class="line"></span><br><span class="line">from Constructor c</span><br><span class="line">select c.getAnAnnotation()</span><br><span class="line"><span class="comment">//https://lgtm.com/query/3206112561297137365/</span></span><br></pre></td></tr></table></figure>
 
-
+<img src="/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/Untitled%209.png" class="" alt="Untitled">
 
 <p>注解本身由类<code>Annotation</code>表示。一个注解就是类型为<code>AnnotationType</code>的expression。</p>
 <p>你可以调整上述查询为只查询被弃用的构造方法：</p>
