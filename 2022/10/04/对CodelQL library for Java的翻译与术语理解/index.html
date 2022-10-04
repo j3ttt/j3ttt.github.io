@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="CodeQL library for Java - CodeQL About the CodeQL library for Java There is an extensive library for analyzing CodeQL databases extracted from Java projects. The classes in this library present the da">
+<meta property="og:type" content="article">
+<meta property="og:title" content="对CodeQL library for Java的翻译与术语理解">
+<meta property="og:url" content="http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/index.html">
+<meta property="og:site_name" content="jettt&#39;s blog">
+<meta property="og:description" content="CodeQL library for Java - CodeQL About the CodeQL library for Java There is an extensive library for analyzing CodeQL databases extracted from Java projects. The classes in this library present the da">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-10-04T06:06:02.000Z">
+<meta property="article:modified_time" content="2022-10-04T06:14:30.425Z">
+<meta property="article:author" content="jettt">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>对CodeQL library for Java的翻译与术语理解</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="https://j3ttt.github.io">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2022/10/04/CheatSheet%20for%20CodeQL%20/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/&text=对CodeQL library for Java的翻译与术语理解"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/&title=对CodeQL library for Java的翻译与术语理解"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/&is_video=false&description=对CodeQL library for Java的翻译与术语理解"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=对CodeQL library for Java的翻译与术语理解&body=Check out this article: http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/&title=对CodeQL library for Java的翻译与术语理解"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/&title=对CodeQL library for Java的翻译与术语理解"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/&title=对CodeQL library for Java的翻译与术语理解"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/&title=对CodeQL library for Java的翻译与术语理解"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/&name=对CodeQL library for Java的翻译与术语理解&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/&t=对CodeQL library for Java的翻译与术语理解"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#About-the-CodeQL-library-for-Java"><span class="toc-number">1.</span> <span class="toc-text">About the CodeQL library for Java</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Summary-of-the-library-classes"><span class="toc-number">2.</span> <span class="toc-text">Summary of the library classes</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Program-elements"><span class="toc-number">3.</span> <span class="toc-text">Program elements</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Types%E7%B1%BB%E5%9E%8B"><span class="toc-number">3.1.</span> <span class="toc-text">Types类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generics%E6%B3%9B%E5%9E%8B"><span class="toc-number">3.2.</span> <span class="toc-text">Generics泛型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Variables"><span class="toc-number">3.3.</span> <span class="toc-text">Variables</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Abstract-syntax-tree"><span class="toc-number">4.</span> <span class="toc-text">Abstract syntax tree</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Metadata"><span class="toc-number">5.</span> <span class="toc-text">Metadata</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Metrics"><span class="toc-number">6.</span> <span class="toc-text">Metrics</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Call-graph"><span class="toc-number">7.</span> <span class="toc-text">Call graph</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">7.1.</span> <span class="toc-text">总结</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        对CodeQL library for Java的翻译与术语理解
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">jettt</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-10-04T06:06:02.000Z" itemprop="datePublished">2022-10-04</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p><a target="_blank" rel="noopener" href="https://codeql.github.com/docs/codeql-language-guides/codeql-library-for-java/#program-elements">CodeQL library for Java - CodeQL</a></p>
+<h2 id="About-the-CodeQL-library-for-Java"><a href="#About-the-CodeQL-library-for-Java" class="headerlink" title="About the CodeQL library for Java"></a>About the CodeQL library for Java</h2><blockquote>
+<p>There is an extensive library for analyzing CodeQL databases extracted from Java projects. The classes in this library present the data from a database in an object-oriented form and provide abstractions and predicates to help you with common analysis tasks.</p>
+</blockquote>
+<p>CodeQL 从Java项目中提取并设计了丰富的library用来做codeQL数据库的分析。该库中的classes一表示面向对象形式的数据库表中数据，二提供了<strong>abstraction</strong>和谓词，来帮助你进行常规分析。（abstraction不太好翻译，抽象，建议看B站南京大学《软件分析》课1，李樾老师对抽象有个介绍。同时建议codeql与《软件分析》一起食用）</p>
+<blockquote>
+<p>The library is implemented as a set of QL modules, that is, files with the extension <code>.qll</code>. The module <code>java.qll</code> imports all the core Java library modules, so you can include the complete library by beginning your query with:</p>
+</blockquote>
+<p>该library是一系列QLmodules的合集，即.qll文件。Module java.qll提供了所有的核心Java库模块，你可以以以下方式引入：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>The rest of this article briefly summarizes the most important classes and predicates provided by this library.</p>
+</blockquote>
+<p>文章的剩余部分会简单概括CodeQL library中最重要的类classes 和 谓词predicates</p>
+<blockquote>
+<p><strong>Note</strong>：<br>The example queries in this article illustrate the types of results returned by different library classes. The results themselves are not interesting but can be used as the basis for developing a more complex query. The other articles in this section of the help show how you can take a simple query and fine-tune it to find precisely the results you’re interested in.</p>
+</blockquote>
+<p><strong>注意：</strong></p>
+<p>本章中的查询示例是为了阐明不同classes返回的不同结果。查询的结果本身可能不够‘高大上’，但学习基础是为了以后能写出更复杂、更牛逼、更帅气的查询语句（一键挖洞）。其他章节则提供了你足够感兴趣的内容（就是更高级的教程）。</p>
+<p>ok正片。</p>
+<hr>
+<h2 id="Summary-of-the-library-classes"><a href="#Summary-of-the-library-classes" class="headerlink" title="Summary of the library classes"></a>Summary of the library classes</h2><p>在CodeQL library库中最关键的<code>类（Classes）</code>可以分成五个大类：</p>
+<ol>
+<li>代表程序element的类（例如classes，类；和method，方法）</li>
+<li>代表AST节点的类（statements and expressions，听说学好AST对ql学习很重要）<blockquote>
+<p>程序分为语句statement，和表达式expressions。表达式比较好理解，就是1+1，x operate y；语句的话大概就是代码块？x=1+1 ,x asign y 。statement和expressions应该是编译器方面的知识，不懂，没学过。</p>
+</blockquote>
+</li>
+<li>代表metadata的类（例如annotations注解； comments注释）</li>
+<li>代表计算 metrics的类（例如cyclomatic complexity and coupling，循环复杂度和耦合度）</li>
+<li>代表navigating the program’s call graph的类（程序的调用图）</li>
+</ol>
+<h2 id="Program-elements"><a href="#Program-elements" class="headerlink" title="Program elements"></a>Program elements</h2><h3 id="Types类型"><a href="#Types类型" class="headerlink" title="Types类型"></a>Types类型</h3><p>Class <code>Type</code> 有一系列代表不同类型的子类：</p>
+<ul>
+<li><code>PrimitiveType</code>，代表原始数据类型<code>boolean</code>, <code>byte</code>, <code>char</code>, <code>double</code>, <code>float</code>, <code>int</code>, <code>long</code>, <code>short</code>; 同时QL将<code>void</code> 和 <code>&lt;nulltype&gt;</code> (the type of the <code>null</code> literal)归类为原始数据类型。</li>
+<li><code>RefType</code> 代表一个reference，其子类：<ul>
+<li><code>Class</code> ，Java类</li>
+<li><code>Interface</code> ，Java接口</li>
+<li><code>EnumType</code> ，Java <code>enum</code>类型</li>
+<li><code>Array</code>，Java数组类型</li>
+</ul>
+</li>
+</ul>
+<p>以下查询可以找出程序中的所有类型为int 的变量</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java</span><br><span class="line"></span><br><span class="line">from Variable v, PrimitiveType pt</span><br><span class="line"><span class="type">where</span> <span class="variable">pt</span> <span class="operator">=</span> v.getType() and</span><br><span class="line">    pt.hasName(<span class="string">&quot;int&quot;</span>)</span><br><span class="line">select v</span><br><span class="line"></span><br><span class="line"><span class="comment">//该查询在LGTM网站上的查询结果</span></span><br><span class="line"><span class="comment">//https://lgtm.com/query/860076406167044435/</span></span><br></pre></td></tr></table></figure>
+
+<p>Reference类型也可以根据它们声明的范围来分类</p>
+<blockquote>
+<p><code>TopLevelClass</code>represents a class declared at the top-level of a compilation unit.</p>
+</blockquote>
+<ul>
+<li><code>TopLevelClass</code> ，代表声明在一个编译单元顶层的类</li>
+</ul>
+<p>示例：查询所有与其编译单元不同名的TopLevelClass</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java</span><br><span class="line"></span><br><span class="line">from TopLevelType tl</span><br><span class="line">where tl.getName() != tl.getCompilationUnit().getName()</span><br><span class="line">select tl</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>NestedClass</code>，代表一个内部类（就是<a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/tutorial/java/javaOO/nested.html">声明在其他type内部的类</a>）（注意这里说的是type内部，指的是QL的type，而非单纯的Java类内部），例如：<ul>
+<li><code>LocalClass</code>，就是声明在方法或者构造方法内部的类，就是Java中的<a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/tutorial/java/javaOO/localclasses.html">本地类</a></li>
+<li><code>AnonymousClass</code>，就是Java中的<a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/tutorial/java/javaOO/anonymousclasses.html">匿名类</a>。</li>
+</ul>
+</li>
+</ul>
+
+
+
+
+<p>最后，QL库中还有其他 代表Java标准库中的类 的类：<code>TypeObject</code>, <code>TypeCloneable</code>, <code>TypeRuntime</code>, <code>TypeSerializable</code>, <code>TypeString</code>, <code>TypeSystem</code> and <code>TypeClass</code>. 顾名思义，每一个QL类都表示其类名代表的Java标准类。</p>
+<p>以下示例表示查询 直接继承Object类的内部类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java</span><br><span class="line"></span><br><span class="line">from NestedClass nc</span><br><span class="line">where nc.getASupertype() <span class="keyword">instanceof</span> TypeObject</span><br><span class="line">select nc</span><br><span class="line"></span><br><span class="line"><span class="comment">//https://lgtm.com/query/8482509736206423238/</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Generics泛型"><a href="#Generics泛型" class="headerlink" title="Generics泛型"></a>Generics泛型</h3><p><code>Type</code>有几个子类来处理泛型。</p>
+<p>一个 <code>GenericType</code> ，要么是 <code>GenericInterface</code> ，要么是 <code>GenericClass，</code>就是泛型接口和泛型类。表示了像Java标准库中的<code>java.util.Map</code> 接口里的泛型声明。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> java.util.;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Map</span>&lt;K, V&gt; &#123;</span><br><span class="line">    <span class="type">int</span> <span class="title function_">size</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>类型参数（Type parameters），像上述例子中的K和V，在QL中由<code>TypeVariable</code>表示。什么叫类型参数？K和V其实就是一个参数，只不过传入这个参数的不是某个具体的值，而是一个类型，比如String、Int。这种接收类作为参数就叫类型参数。</p>
+<blockquote>
+<p>A parameterized instance of a generic type provides a concrete type to instantiate the type parameter with, as in <code>Map&lt;String, File&gt;</code>. Such a type is represented by a <code>ParameterizedType</code>, which is distinct from the <code>GenericType</code> representing the generic type it was instantiated from. To go from a <code>ParameterizedType</code> to its corresponding <code>GenericType</code>, you can use predicate <code>getSourceDeclaration</code>.</p>
+</blockquote>
+<p>//这一段翻译起来比较吃力，但其实就是Java泛型的内容。结合Java泛型的知识来理解一下。</p>
+<p>一个类型实参 ****提供了一个具体的类型 来实例化该类型形参，如<code>Map&lt;String, File&gt;</code> 。</p>
+<p>（在Map&lt;K, V&gt;中，K和V就是一个参数，一个类型形参。当我们实际调用Map的时候，传入需要的类型，也就是类型实参。这是形参和实参的知识。）</p>
+<p>这种参数化类型在QL中由<code>ParameterizedType</code> 表示，意味着实参化的<code>GenericType</code> 。（<code>ParameterizedType</code> 和<code>GenericType</code> 的关系应该就是Map&lt;String, File&gt;和Map&lt;K, V&gt;的关系）</p>
+<p>（再举个例子，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Test</span>&lt;T&gt;&#123;</span><br><span class="line">	<span class="comment">//定义一个GenericClass，泛型类型Test，</span></span><br><span class="line">	<span class="comment">//在实例化该Test类时，需要什么类型就将需要的类型传入参数T，也就是类型参数Type parameters</span></span><br><span class="line">	Test&lt;String&gt; obj = <span class="keyword">new</span> <span class="title class_">Test</span>()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果想通过<code>ParameterizedType</code> 找到其对应的<code>GenericType</code> ，你可以使用谓词<code>getSourceDeclaration</code>。（就是如果想通过实参找到其泛型，可以使用谓词getSourceDeclaration。没有直观的例子不太好理解，希望后续碰到可以回来补充）</p>
+<p>示例：找出所有java.util.Map的ParameterizedType</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java</span><br><span class="line"></span><br><span class="line">from GenericInterface map, ParameterizedType pt</span><br><span class="line">where map.hasQualifiedName(<span class="string">&quot;java.util&quot;</span>, <span class="string">&quot;Map&quot;</span>) and</span><br><span class="line">    pt.getSourceDeclaration() = map</span><br><span class="line">select pt</span><br><span class="line"><span class="comment">//https://lgtm.com/query/7863873821043873550/</span></span><br><span class="line"><span class="comment">//LGTM网站中无结果</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>generic types may restrict which types a type parameter can be bound to</p>
+</blockquote>
+<p>通常情况下，泛型会严格限制类型参数可以绑定的类型。有点绕，看例子</p>
+<p>示例，一个从strings到numbers的Map映射声明如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">StringToNumMap</span>&lt;N <span class="keyword">extends</span> <span class="title class_">Number</span>&gt; <span class="keyword">implements</span> <span class="title class_">Map</span>&lt;String, N&gt; &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//一个StringToNumMap类实现了Map接口</span></span><br><span class="line"><span class="comment">//StringToNumMap是一个从string到number的映射</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>This means that a parameterized instance of <code>StringToNumberMap</code> can only instantiate type parameter <code>N</code> with type <code>Number</code> or one of its subtypes but not, for example, with <code>File</code>. We say that N is a bounded type parameter, with <code>Number</code> as its upper bound. In QL, a type variable can be queried for its type bound using predicate <code>getATypeBound</code>. The type bounds themselves are represented by class <code>TypeBound</code>, which has a member predicate <code>getType</code> to retrieve the type the variable is bounded by.</p>
+</blockquote>
+<p>N extends Number 意味着一个StringToNumMap的实参，只能实例化类型参数N为Number或Number的子类。（再说人话一点应该就是，我们只能往参数N里传Number或Number的子类）。我们说N是一个有界类型参数（bounded type parameter），而Number是它的上界。在QL中，可以通过使用谓词getATypeBound来查询一个类型变量的类型界限（type bound）。Type bounds本身可用类<code>TypeBound</code>表示，该类有一个成员谓词<code>getType</code> 来获得变量的 界限的类型。（一个类型界限，一个界限类型。其实根据谓词的名字就可以理解，我们究竟是getType还是getBound）。</p>
+<p>示例，以下查询找出所有界限类型为Number的类型变量</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java</span><br><span class="line"><span class="comment">//前几段的英文中表达类型变量的都是type parameter。其实在QL中写的是type variable</span></span><br><span class="line">from TypeVariable tv, TypeBound tb</span><br><span class="line"><span class="type">where</span> <span class="variable">tb</span> <span class="operator">=</span> tv.getATypeBound() and</span><br><span class="line">    tb.getType().hasQualifiedName(<span class="string">&quot;java.lang&quot;</span>, <span class="string">&quot;Number&quot;</span>)</span><br><span class="line">select tv</span><br><span class="line"></span><br><span class="line"><span class="comment">//https://lgtm.com/query/6740696080876162817/</span></span><br></pre></td></tr></table></figure>
+
+<p>为了处理没有指定泛型的遗留代码（泛型好像Java1.5后才引入？），每个泛型都有一个‘raw’ version without any type parameters。在QL库中，raw type 由<code>RawType</code>表示，理所当然RawType有两个子类<code>RawClass</code>和<code>RawInterface</code>。同样的，有谓词<code>getSourceDeclaration</code>来获取对应的泛型（草我这里才意识到把泛型打成范型了）</p>
+<p>示例，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java</span><br><span class="line"></span><br><span class="line">from Variable v, RawType rt</span><br><span class="line"><span class="type">where</span> <span class="variable">rt</span> <span class="operator">=</span> v.getType() and <span class="comment">//我思索了好几天，这个‘=’到底是赋值还是等于，想想应该是等于。</span></span><br><span class="line">    rt.getSourceDeclaration().hasQualifiedName(<span class="string">&quot;java.util&quot;</span>, <span class="string">&quot;Map&quot;</span>)</span><br><span class="line">select v</span><br><span class="line"><span class="comment">//https://lgtm.com/query/4032913402499547882/</span></span><br></pre></td></tr></table></figure>
+
+<p>select 一个 Variable v， where v的type 等于 raw，and 该raw type的getSourceDeclaration是Map。</p>
+<p>查询一个参数 v，where v的type是</p>
+<p>（回顾一下getSourceDeclaration：如果想通过ParameterizedType 找到其对应的GenericType ，你可以使用谓词getSourceDeclaration）</p>
+<p>看看查询结果：（这个Map map）</p>
+
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">method</span><span class="params">(Map map)</span>&#123;</span><br><span class="line">	<span class="comment">//一个方法，传入的参数是类型为Map的map</span></span><br><span class="line">	<span class="comment">//假如有泛型的话，可能就是 Map&lt;String, N&gt; map</span></span><br><span class="line">	<span class="comment">//然后某个参数getType后得到的可能就是String，大概。</span></span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果是下面这个例子，查询的结果就会是m1而不是m2</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Map</span> <span class="variable">m1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">HashMap</span>();</span><br><span class="line">Map&lt;String, String&gt; m2 = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;String, String&gt;();</span><br></pre></td></tr></table></figure>
+
+<p>最后，变量可被声明为通配符类型（<a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/tutorial/java/generics/wildcards.html">wildcard type</a>）：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;? <span class="keyword">extends</span> <span class="title class_">Number</span>, ? <span class="built_in">super</span> Float&gt; m;</span><br><span class="line"><span class="comment">//?,无界通配符</span></span><br><span class="line"><span class="comment">//? extends Numeber,上界通配符。指可传入Number的子类</span></span><br><span class="line"><span class="comment">//? super Float,下界通配符。指可传入Float的父类</span></span><br></pre></td></tr></table></figure>
+
+<p>此处的通配符<code>? extends Number</code> and <code>? super Float</code> 在QL中由<code>WildcardTypeAccess</code>类表示。与类型参数相同的是，通配符也有类型界限，与之不同的是通配符有上界（<code>? extends Number</code>）也有下界（<code>? super Number</code>）。类<code>WildcardTypeAccess</code> 提供了成员谓词<code>getUpperBound</code> and <code>getLowerBound</code> 来分别获取上界和下界。</p>
+<p>For dealing with 泛型方法，QL提供了类<code>GenericMethod</code>, <code>ParameterizedMethod</code> and <code>RawMethod</code>,看名字和泛型类一样的。</p>
+<p>这里我自己做个总结：</p>
+<ul>
+<li><code>GenericMethod</code> ，泛型方法，对应的是泛型类<code>GenericType</code> （同时指代<code>GenericInterface</code>和<code>GenericClass</code>）。</li>
+<li><code>ParameterizedMethod</code> ，参数化方法，对应的时参数化类型<code>ParameterizedType</code></li>
+<li><code>RawMethod</code>,中文我也不知道翻译，原生方法？对应<code>RawType</code></li>
+</ul>
+
+
+
+
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/iyangyuan/archive/2013/04/09/3011274.html">https://www.cnblogs.com/iyangyuan/archive/2013/04/09/3011274.html</a></p>
+<h3 id="Variables"><a href="#Variables" class="headerlink" title="Variables"></a>Variables</h3><p>类<code>Variables</code>，就是Java中的变量。同时表示字段、本地变量或者参数。有三个子类：</p>
+<ul>
+<li><code>Field</code> ，Java字段</li>
+<li><code>LocalVariableDecl</code> ，本地变量</li>
+<li><code>Parameter</code> ，参数</li>
+</ul>
+<h2 id="Abstract-syntax-tree"><a href="#Abstract-syntax-tree" class="headerlink" title="Abstract syntax tree"></a>Abstract syntax tree</h2><p>AST，抽象语法树。由statements语句 (class <code>Stmt</code>) and expressions表达式 (class <code>Expr</code>)来组成抽象语法树的node。For a full list of expression and statement types available in the standard QL library, see “<a target="_blank" rel="noopener" href="https://codeql.github.com/docs/codeql-language-guides/abstract-syntax-tree-classes-for-working-with-java-programs/">Abstract syntax tree classes for working with Java programs</a>.”</p>
+<p><code>Expr</code> and <code>Stmt</code> 都提供了成员谓词来展示一个程序的抽象语法树</p>
+<ul>
+<li><code>Expr.getAChildExpr</code> returns a sub-expression of a given expression</li>
+<li><code>Stmt.getAChild</code> returns a statement or expression that is nested directly inside a given statement.</li>
+<li><code>Expr.getParent</code> and <code>Stmt.getParent</code> return the parent node of an AST node.</li>
+</ul>
+<p>说实话，这里要是有张AST的图，会直观很多</p>
+<p>示例，以下查询finds 所有父节点是<code>return</code> 的expressions</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java</span><br><span class="line"></span><br><span class="line">from Expr e</span><br><span class="line">where e.getParent() <span class="keyword">instanceof</span> ReturnStmt</span><br><span class="line">select e</span><br><span class="line"><span class="comment">//https://lgtm.com/query/1947757851560375919/</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>conf.get(USER_NAME)是expressions？</p>
+
+
+<p>“success”也是？</p>
+<blockquote>
+<p>Therefore, if the program contains a return statement <code>return x + y;</code>, this query will return <code>x + y</code>.</p>
+</blockquote>
+<p>因此，如果程序包含一个返回语句<code>return x+y;</code> ，这个查询就将返回<code>x+y</code></p>
+<p>意思是<code>return x+y;</code> 是一个statement，而<code>x+y</code> 是一个expression。</p>
+<p>同理<code>return “success”;</code> 是一个statement，<code>“success”</code>是一个expression咯？</p>
+<p>下面这个查询会找出所有父节点是<code>if</code> statement的statement</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java</span><br><span class="line"></span><br><span class="line">from Stmt s</span><br><span class="line">where s.getParent() <span class="keyword">instanceof</span> IfStmt</span><br><span class="line">select s</span><br></pre></td></tr></table></figure>
+
+
+
+<p>最后，下面这个例子查询所有方法体：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java</span><br><span class="line"></span><br><span class="line">from Stmt s</span><br><span class="line">where s.getParent() <span class="keyword">instanceof</span> Method</span><br><span class="line">select s</span><br></pre></td></tr></table></figure>
+
+
+
+<p>上述几个例子展示了一个expression的父节点不一定都是expression：它还可能是一个statement，比如IfStmt。同样的，一个statement的父节点也可能是方法或者构造函数。为了覆盖到这种问题，QL Java库提供了两个抽象类<code>ExprParent</code> and <code>StmtParent</code>,前者代表了任何<strong>可能</strong>是expression的父节点的节点，后者代表了任何<strong>可能</strong>是statement的父节点的节点。</p>
+<p>For more information on working with AST classes, see the <a target="_blank" rel="noopener" href="https://codeql.github.com/docs/codeql-language-guides/overflow-prone-comparisons-in-java/">article on overflow-prone comparisons in Java</a>.</p>
+<h2 id="Metadata"><a href="#Metadata" class="headerlink" title="Metadata"></a>Metadata</h2><p>Java程序有多中元数据（Metadata），尤其是<a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/tutorial/java/annotations/">annotations</a> and <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Javadoc">Javadoc</a> comments（注解和注释）。因为元数据有助于加强代码分析和其本身作为分析对象本身的缘故，QL库定义了几个类来访问它。</p>
+<p>对于annotations（注解），类<code>Annotatable</code>是程序中所有<strong>可被注解</strong>的element的超类。This includes packages, reference types, fields, methods, constructors, and local variable declarations。对于每种element来说，它的谓词<code>getAnAnnotation</code>可获得它自身可能有的注解。</p>
+<p>示例，下列查询找出所有构造方法的注解</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java</span><br><span class="line"></span><br><span class="line">from Constructor c</span><br><span class="line">select c.getAnAnnotation()</span><br><span class="line"><span class="comment">//https://lgtm.com/query/3206112561297137365/</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>注解本身由类<code>Annotation</code>表示。一个注解就是类型为<code>AnnotationType</code>的expression。</p>
+<p>你可以调整上述查询为只查询被弃用的构造方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java</span><br><span class="line"></span><br><span class="line">from Constructor c, Annotation ann, AnnotationType anntp</span><br><span class="line"><span class="type">where</span> <span class="variable">ann</span> <span class="operator">=</span> c.getAnAnnotation() <span class="type">and</span></span><br><span class="line">    <span class="variable">anntp</span> <span class="operator">=</span> ann.getType() and</span><br><span class="line">    anntp.hasQualifiedName(<span class="string">&quot;java.lang&quot;</span>, <span class="string">&quot;Deprecated&quot;</span>)</span><br><span class="line">select ann</span><br></pre></td></tr></table></figure>
+
+<p>For more information on working with annotations, see the <a target="_blank" rel="noopener" href="https://codeql.github.com/docs/codeql-language-guides/annotations-in-java/">article on annotations</a>.</p>
+<p>For Javadoc, class <code>Element</code> 有一个成员谓词<code>getDoc</code>可以返回<code>Documentable</code> 对象的代理，然后可以查询该object上附加的注释。</p>
+<p>For example, the following query finds Javadoc comments on private fields:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java</span><br><span class="line"></span><br><span class="line">from Field f, Javadoc jdoc, AuthorTag at</span><br><span class="line">where f.isPrivate() <span class="type">and</span></span><br><span class="line">    <span class="variable">jdoc</span> <span class="operator">=</span> f.getDoc().getJavadoc() and</span><br><span class="line">    at.getParent+() = jdoc</span><br><span class="line">select at</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">Note</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">On line 5 we used getParent+ to capture tags that are nested at any depth within the Javadoc comment.</span></span><br><span class="line"><span class="comment"></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Metrics"><a href="#Metrics" class="headerlink" title="Metrics"></a>Metrics</h2><p>翻译成度量指标，还是复杂度？标准QL Java库为计算Java程序元素的复杂度提供了广泛的支持。</p>
+<blockquote>
+<p>To avoid overburdening the classes representing those elements with too many member predicates related to metric computations, these predicates are made available on delegate classes instead.</p>
+</blockquote>
+<p>为了避免classes使用过多计算元素复杂度相关的成员谓词来表示这些elements，这些谓词被设计成在委托类（delegate classes，委托类？代理类？）上可用</p>
+<p>Altogether, there are six such classes: <code>MetricElement</code>, <code>MetricPackage</code>, <code>MetricRefType</code>, <code>MetricField</code>, <code>MetricCallable</code>, and <code>MetricStmt</code>.The corresponding element classes each provide a member predicate <code>getMetrics</code> that can be used to obtain an instance of the delegate class, on which metric computations can then be performed.（我觉得这部分和安全没啥关系，大概。下面这个圈复杂度是我大学软件测试里学的，可能会有优化有关，反正我不翻译了）</p>
+<p>For example, the following query finds methods with a <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Cyclomatic_complexity">cyclomatic complexity</a> greater than 40:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java</span><br><span class="line"></span><br><span class="line">from Method m, MetricCallable mc</span><br><span class="line"><span class="type">where</span> <span class="variable">mc</span> <span class="operator">=</span> m.getMetrics() and</span><br><span class="line">    mc.getCyclomaticComplexity() &gt; <span class="number">40</span></span><br><span class="line">select m</span><br></pre></td></tr></table></figure>
+
+<p>➤ <a target="_blank" rel="noopener" href="https://lgtm.com/query/6566950741051181919/">See this in the query console on LGTM.com</a>. Most large projects include some methods with a very high cyclomatic complexity. These methods are likely to be difficult to understand and test.</p>
+<h2 id="Call-graph"><a href="#Call-graph" class="headerlink" title="Call graph"></a>Call graph</h2><p>调用图。CodeQL databases generated from Java code bases include precomputed information about the program’s call graph, that is, which methods or constructors a given call may dispatch to at runtime.（我翻不动。反正就是QL通过静态分析Java代码可能的方法调用生成了ql 数据库。）</p>
+<p>类<code>Callable</code>包括both methods and constructors。Call expressing 被抽象成类<code>Call</code>——call expressing includes method calls, <code>new</code> expressions, and explicit constructor calls using <code>this</code> or <code>super</code>.</p>
+<p>我们可以使用谓词<code>Call.getCallee</code> 来找出某个特定的调用表达式所指的方法或构造函数。For example, the following query finds all calls to methods called <code>println</code>:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java</span><br><span class="line"></span><br><span class="line">from Call c, Method m</span><br><span class="line"><span class="type">where</span> <span class="variable">m</span> <span class="operator">=</span> c.getCallee() and <span class="comment">//Call.getCallee 返回 Method</span></span><br><span class="line">    m.hasName(<span class="string">&quot;println&quot;</span>)</span><br><span class="line">select c</span><br><span class="line"><span class="comment">//找到println的调用</span></span><br><span class="line"><span class="comment">//https://lgtm.com/query/5861255162551917595/</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>Conversely, <code>Callable.getAReference</code> returns a <code>Call</code> that refers to it.</p>
+</blockquote>
+<p>与之相反，<code>Callable.getAReference</code> 返回一个 <code>Call</code> that refers to it.（返回一个Call对象） So we can find methods and constructors that are never called using this query:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java</span><br><span class="line"></span><br><span class="line">from Callable c</span><br><span class="line">where not <span class="title function_">exist</span><span class="params">(c.getAReference)</span> <span class="comment">//c.getAReference找到所有方法的引用</span></span><br><span class="line">select c</span><br><span class="line"><span class="comment">//https://lgtm.com/query/7261739919657747703/</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ol>
+<li>Call和Callable的关系<ol>
+<li>Call是方法调用的抽象。有谓词getCallee，其返回一个Method</li>
+<li>Callable是<code>Method</code>和<code>Constructor</code>的超类。有谓词getAReference，返回一个Call</li>
+</ol>
+</li>
+</ol>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="https://j3ttt.github.io">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#About-the-CodeQL-library-for-Java"><span class="toc-number">1.</span> <span class="toc-text">About the CodeQL library for Java</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Summary-of-the-library-classes"><span class="toc-number">2.</span> <span class="toc-text">Summary of the library classes</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Program-elements"><span class="toc-number">3.</span> <span class="toc-text">Program elements</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Types%E7%B1%BB%E5%9E%8B"><span class="toc-number">3.1.</span> <span class="toc-text">Types类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generics%E6%B3%9B%E5%9E%8B"><span class="toc-number">3.2.</span> <span class="toc-text">Generics泛型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Variables"><span class="toc-number">3.3.</span> <span class="toc-text">Variables</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Abstract-syntax-tree"><span class="toc-number">4.</span> <span class="toc-text">Abstract syntax tree</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Metadata"><span class="toc-number">5.</span> <span class="toc-text">Metadata</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Metrics"><span class="toc-number">6.</span> <span class="toc-text">Metrics</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Call-graph"><span class="toc-number">7.</span> <span class="toc-text">Call graph</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">7.1.</span> <span class="toc-text">总结</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/&text=对CodeQL library for Java的翻译与术语理解"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/&title=对CodeQL library for Java的翻译与术语理解"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/&is_video=false&description=对CodeQL library for Java的翻译与术语理解"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=对CodeQL library for Java的翻译与术语理解&body=Check out this article: http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/&title=对CodeQL library for Java的翻译与术语理解"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/&title=对CodeQL library for Java的翻译与术语理解"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/&title=对CodeQL library for Java的翻译与术语理解"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/&title=对CodeQL library for Java的翻译与术语理解"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/&name=对CodeQL library for Java的翻译与术语理解&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://j3ttt.github.io/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/&t=对CodeQL library for Java的翻译与术语理解"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2022
+    jettt
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="https://j3ttt.github.io">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
