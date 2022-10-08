@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="0、RMI Attackrmi的基本使用与流程调用、rmi与rpc、从源码分析rmi、rmi攻击面 一、什么是RMIRMI（Remote Method Invocation） 远程方法调用，是一种让客户端Java虚拟机上的对象像调用本地对象一样调用服务端Java 虚拟机中的对象上的方法思想，是Java开发分布式网络应用的解决方案之一，与RPC有着相似性。 RMI默认使用Java序列化与JRMP协议">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从源码分析RMI流程">
+<meta property="og:url" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/index.html">
+<meta property="og:site_name" content="jettt&#39;s blog">
+<meta property="og:description" content="0、RMI Attackrmi的基本使用与流程调用、rmi与rpc、从源码分析rmi、rmi攻击面 一、什么是RMIRMI（Remote Method Invocation） 远程方法调用，是一种让客户端Java虚拟机上的对象像调用本地对象一样调用服务端Java 虚拟机中的对象上的方法思想，是Java开发分布式网络应用的解决方案之一，与RPC有着相似性。 RMI默认使用Java序列化与JRMP协议">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%201.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%202.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%203.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%204.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%205.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%206.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%207.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%208.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%209.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2010.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2011.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2012.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2013.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2014.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2015.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2016.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2017.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2018.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2019.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2020.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2021.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2022.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2023.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2024.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2025.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2026.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2027.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2028.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2029.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2030.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2031.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2032.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2033.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2034.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2035.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2036.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2037.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2038.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2039.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2040.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2041.png">
+<meta property="og:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2042.png">
+<meta property="article:published_time" content="2022-10-08T05:38:38.000Z">
+<meta property="article:modified_time" content="2022-10-08T05:39:21.195Z">
+<meta property="article:author" content="jettt">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>从源码分析RMI流程</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="https://j3ttt.github.io">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2022/10/04/%E5%AF%B9CodelQL%20library%20for%20Java%E7%9A%84%E7%BF%BB%E8%AF%91%E4%B8%8E%E6%9C%AF%E8%AF%AD%E7%90%86%E8%A7%A3/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/&text=从源码分析RMI流程"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/&title=从源码分析RMI流程"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/&is_video=false&description=从源码分析RMI流程"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=从源码分析RMI流程&body=Check out this article: http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/&title=从源码分析RMI流程"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/&title=从源码分析RMI流程"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/&title=从源码分析RMI流程"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/&title=从源码分析RMI流程"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/&name=从源码分析RMI流程&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/&t=从源码分析RMI流程"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0%E3%80%81RMI-Attack"><span class="toc-number">1.</span> <span class="toc-text">0、RMI Attack</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AFRMI"><span class="toc-number">2.</span> <span class="toc-text">一、什么是RMI</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-RMI%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-number">2.1.</span> <span class="toc-text">1.1 RMI的使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-RMI%E7%9A%84%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="toc-number">2.2.</span> <span class="toc-text">1.2 RMI的执行流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-1-%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E7%9A%84%E5%88%9B%E5%BB%BA"><span class="toc-number">2.2.1.</span> <span class="toc-text">1.2.1 注册中心的创建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-2-%E8%BF%9C%E7%A8%8B%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA"><span class="toc-number">2.2.2.</span> <span class="toc-text">1.2.2 远程对象创建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-3-%E8%BF%9C%E7%A8%8B%E5%AF%B9%E8%B1%A1%E7%9A%84bind-%E4%B8%8E-lookup"><span class="toc-number">2.2.3.</span> <span class="toc-text">1.2.3 远程对象的bind 与 lookup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-4-%E8%BF%9C%E7%A8%8B%E5%AF%B9%E8%B1%A1%E7%9A%84%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8"><span class="toc-number">2.2.4.</span> <span class="toc-text">1.2.4 远程对象的方法调用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-5-%E6%80%BB%E7%BB%93"><span class="toc-number">2.2.5.</span> <span class="toc-text">1.2.5 总结</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Ref"><span class="toc-number">3.</span> <span class="toc-text">Ref</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        从源码分析RMI流程
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">jettt</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-10-08T05:38:38.000Z" itemprop="datePublished">2022-10-08</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h1 id="0、RMI-Attack"><a href="#0、RMI-Attack" class="headerlink" title="0、RMI Attack"></a>0、RMI Attack</h1><p>rmi的基本使用与流程调用、rmi与rpc、从源码分析rmi、rmi攻击面</p>
+<h1 id="一、什么是RMI"><a href="#一、什么是RMI" class="headerlink" title="一、什么是RMI"></a>一、什么是RMI</h1><p>RMI（Remote Method Invocation） 远程方法调用，是一种让客户端Java虚拟机上的对象像调用本地对象一样调用服务端Java 虚拟机中的对象上的方法思想，是Java开发分布式网络应用的解决方案之一，与RPC有着相似性。</p>
+<p>RMI默认使用Java序列化与JRMP协议（Java Remote Method Protocol）传递数据，另外还支持IIOP协议。Weblogic里面的T3协议就是基于RMI去进行实现的。然后JRMP协议的底层，其实还是TCP/IP协议。</p>
+<p>rmi 的传输完全基于java反序列化啊</p>
+<h2 id="1-1-RMI的使用"><a href="#1-1-RMI的使用" class="headerlink" title="1.1 RMI的使用"></a>1.1 RMI的使用</h2><p>服务注册、服务发现、服务调用。</p>
+<p>1、定义一个我们期望调用的接口，这个接口必须直接或间接继承<code>java.rmi.Remote</code> 接口，并且这个接口中的所有方法声明必须抛出<code>java.rmi.RemoteException</code>异常（或它的超类，IOExcepion或Exception）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 接口类</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">RemoteInterface</span> <span class="keyword">extends</span> <span class="title class_">Remote</span>&#123;</span><br><span class="line">	</span><br><span class="line">		<span class="keyword">public</span> String <span class="title function_">sayHello</span><span class="params">()</span> <span class="keyword">throw</span> RemoteException;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">public</span> String <span class="title function_">sayHello</span><span class="params">(Object name)</span> <span class="keyword">throw</span> RemoteException;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2、创建该远程接口的实现类。实现类除了需要实现接口以外，<strong>通常</strong>还需要继承<code>UnicastRemoteObject</code> 类，扩展此类后，RMI 会自动将这个类 export 给远程想要调用它的 Client 端，同时还提供了一些基础的 <code>equals/hashcode/toString</code>方法，并且在export时会随机绑定一个端口监听客户端的请求，即使不注册，直接请求这个端口也可以通信。 如果不继承UnicastRemoteObject类，后面就需要主动的使用其静态方法 <code>exportObject</code>来手动 export 对象，这样还会引出stub存根的概念。</p>
+<p>ps. 还得为该实现类提供一个构造函数并且抛出RemoteException, 这一步idea会自动提示的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 实现类</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RemoteObject</span> <span class="keyword">extends</span> <span class="title class_">UnicastRemoteObject</span> <span class="keyword">implements</span> <span class="title class_">RemoteInterface</span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> <span class="title function_">RemoteObject</span><span class="params">()</span> <span class="keyword">throws</span> RemoteException &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">hello</span><span class="params">()</span> <span class="keyword">throws</span> RemoteException &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;ha lo &quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">hello</span><span class="params">(Object name)</span> <span class="keyword">throws</span> RemoteException &#123;</span><br><span class="line">        <span class="keyword">return</span> name.getClass().getName();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>3、创建 注册中心。为什么需要注册中心？</p>
+<p>众所周知，服务器之间通过端口通信。上面稍微提了一句，<strong>“远程对象继承<code>UnicastRemoteObject</code> 类类后，实例化时会先调用UnicastRemoteObject类的构造方法，将自己export到某个随机端口监听客户端的请求”</strong>。当客户端想要远程调用服务器端的对象的方法时，需要知道该方法的ip和端口。等待远程调用的对象一多，总不能将ip和port写死在代码里。故这里设计了一个丙方register来自动处理，服务端每新提供一个远程对象，只需要将远程对象和一个name（名称）一起注册到rmiregistry远程对象注册表，就会告知registry自己的IP、port等信息。注册中心就相当于一个中介平台，整合客户端的需求与服务端的资源。</p>
+<p>注册中心由 <code>java.rmi.registry.Registry</code>和 <code>java.rmi.Naming</code>来实现。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Server</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> RemoteException, AlreadyBoundException, MalformedURLException &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">//创建注册中心，开放在1099端口</span></span><br><span class="line">            LocateRegistry.createRegistry(<span class="number">1099</span>);</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//创建远程对象</span></span><br><span class="line">        <span class="type">RemoteInterface</span> <span class="variable">remoteInterface</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RemoteObject</span>();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//naming 绑定 名称与远程对象。名称为Hello，远程对象为⬆面刚new的RemoteObject</span></span><br><span class="line">        Naming.bind(<span class="string">&quot;rmi://localhost:1099/Hello&quot;</span>, remoteInterface);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上三步 接口、接口实现类与注册中心，都是在服务端。注册中心其实可以单独提出来作一端，但是通常都是和服务端写在一起。</p>
+<p>4、客户端Client。通过host和port来连接到注册中心，再调用registry的lookup方法，通过name（名称）来查找与之绑定的远程对象的<strong>引用</strong>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Client</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> RemoteException, NotBoundException &#123;</span><br><span class="line">        <span class="comment">//通过LocateRegistry.getRegistry 获取服务端上注册中心的远程引用. </span></span><br><span class="line">				<span class="comment">//参数 host:Stirng, port:int。第二个参数不写就是默认1099</span></span><br><span class="line">        <span class="type">Registry</span> <span class="variable">registry</span> <span class="operator">=</span>LocateRegistry.getRegistry(<span class="string">&quot;127.0.0.1&quot;</span>,<span class="number">1099</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//lookup reference of remote object</span></span><br><span class="line">        <span class="type">RemoteInterface</span> <span class="variable">remoteInterface</span> <span class="operator">=</span>(RemoteInterface) registry.lookup(<span class="string">&quot;Hello&quot;</span>);</span><br><span class="line"></span><br><span class="line">        System.out.println(remoteInterface.hello());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>启动Server再运行Client，完成一次简单的调用</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled.png" class="" alt="Untitled">
+
+<h2 id="1-2-RMI的执行流程"><a href="#1-2-RMI的执行流程" class="headerlink" title="1.2 RMI的执行流程"></a>1.2 RMI的执行流程</h2><p>简单讲完了rmi的使用，我们来看看rmi的调用</p>
+<p>RMI流程图如下：</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%201.png" class="" alt="Untitled">
+
+<p>这里额外引入两个概念 stub（存根）与skeleton（骨架）。</p>
+<p>文章开头说过RMI与RPC有相似性——都是通过网络从远程计算机上请求服务，无需关注底层网络通讯的具体过程。</p>
+<p>RMI中为了隐藏网络通讯的过程细节采用了<strong>动态代理</strong>的方式来进行实现。 在客户端和服务器各有一个代理，客户端的代理叫Stub（存根），服务端的代理叫Skeleton（骨架），合在一起形成了 RMI 构架协议，负责网络通信相关的功能。<strong>代理都是由服务端产生的，客户端的代理是在服务端产生后动态加载过去的。</strong></p>
+<p>为什么有stubs和skeleton？从哪里来？用来干嘛？</p>
+<p>代码调试部分<del>大量</del>抄袭自su18.org师傅</p>
+<h3 id="1-2-1-注册中心的创建"><a href="#1-2-1-注册中心的创建" class="headerlink" title="1.2.1 注册中心的创建"></a>1.2.1 注册中心的创建</h3><p>我们使用<code>LocateRegistry.*createRegistry(1099)</code>* 来创建注册中心，用<code>LocateRegistry.*getRegistry*(&quot;1.2.3.4&quot;,1099)</code> 来获取注册中心。通常情况下Server端和Registry端是在同一侧，只需要createRegistry后直接用就可以了，但为了好理解，我把他们俩分开。从某种意义上来说，Server和Client其实是一样的，都是通过get Registry这个第三方与对方通信。</p>
+<ul>
+<li>Registry：*<code>createRegistry(1099)</code>*</li>
+<li>Server：*<code>getRegistry*(&quot;1.2.3.4&quot;,1099)</code> ；bind(”name”, Object)</li>
+<li>Client：*<code>getRegistry*(&quot;1.2.3.4&quot;,1099)</code> ；lookup(”name”, Object)</li>
+</ul>
+<p>当创建注册中心<code>LocateRegistry.*createRegistry(1099)*</code>的时候，实际上是返回了一个<code>RegistryImpl</code>对象。方法的注释则说了：</p>
+<blockquote>
+<p>创建并export一个Registry实例在本地。</p>
+</blockquote>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%202.png" class="" alt="Untitled">
+
+<p>在RegistryImpl的构造方法中，new了两个类的对象，分别是LiveRef类和UnicastServerRef类，其中LiveRef对象作为参数传入UnicastServerRef类的构造方法，而UnicastServer则在setup方法中作为参数传给了RegistryImpl的this.ref。</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%203.png" class="" alt="Untitled">
+
+<p>在setup方法中，调用了<code>UnicastServerRef#exportObject</code> ，并传入了RegistryImpl的实例对象</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%204.png" class="" alt="Untitled">
+
+<p>LiveRef和UnicastServerRef这个两个类都有什么用？</p>
+<p>在new LiveRef的时候，传入了Registry.id和我们指定的端口（默认1099）作为参数。Registry.id是个ObjID类型的对象标识符。</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%205.png" class="" alt="Untitled">
+
+<p>跟进构造函数，看到这里调用<code>TCPEndpoint.getLocalEndpoint(var2)</code></p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%206.png" class="" alt="Untitled">
+
+<p>跟进,发现它返回的是一个<code>TCPEndpoint</code>对象，包含通信需要的ip\port信息。<code>TCPEndpoint</code> 类实现了<code>Endpoint</code> 接口，用于通信传输。</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%207.png" class="" alt="Untitled">
+
+<p>回到<code>RegistryImpl#setup</code> , 这里有3步：1、把LiveRef的对象实例传入UnicastServerRef；2、UnicastServerRef 传给 RegistryImpl.ref ；3、UnicastServerRef.exportObject RegistryImpl</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%208.png" class="" alt="Untitled">
+
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%209.png" class="" alt="Untitled">
+
+<p>跟进<code>UnicastServerRef#exportObject</code> 。图里红字说的RegistryImpl_Stub没什么用是指在注册中心端没什么用，RegistryImpl_Stub 这个类实现了 bind/list/lookup/rebind/unbind 等 Registry 定义的方法，在客户端和服务器getRegistry的时候才有用，放在后面。</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2010.png" class="" alt="Untitled">
+
+<p><code>Util#createProxy</code> 会先判断本地是否存在名称为 RegistryImpl_Stub的类，存在，故调用createStub方法。然后通过反射获取RegistryImpl_Stub的构造方法并创建它的实例。</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2011.png" class="" alt="Untitled">
+
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2012.png" class="" alt="Untitled">
+
+<p>你看stub的bind方法，就是将名称和Remote对象writeObject进输出流里。</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2013.png" class="" alt="Untitled">
+
+<p>创建完RegistryImpl_Stub之后，会调用 setSkeleton 方法调用 <code>Util.createSkeleton()</code><br> 方法同样利用反射创建 skeleton，然后将this.skel引用指向RegistryImpl_Skel 对象</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2014.png" class="" alt="Untitled">
+
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2015.png" class="" alt="Untitled">
+
+<p>和stub一样，通过反射获取RegistryImpl_Skel实例。</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2016.png" class="" alt="Untitled">
+
+<p>RegistryImpl_Skel 类提供了 dispatch 方法来分发具体的操作。</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2017.png" class="" alt="Untitled">
+
+<p>创建完RegistryImpl_Stub与RegistryImpl_Skel对象，也就走完了exportObject方法。然后我们重新回到RegistryImpl的构造方法里会发现，同样结束了。LocateRegistry.createRegistry结束了，返回了RegistryImpl对象，RegistryImpl对象封装了LiveRef与UnicastServerRef，UnicastServerRef类又封装了RegistryImpl_Skel类。</p>
+<p>那我们创建的RegistryImpl_Stub去哪里了？</p>
+<p>其实createRegistry创建注册中心的时候并没有用到stub。RegistryImpl_Stub类继承了<code>RemoteStub</code> 类，实现了<code>Registry</code> 接口，具体实现了bind/rebind/list 等方法，一看就是用在客户端和服务端的。</p>
+<p>看向<code>LocateRegistry.*getRegistry*(&quot;127.0.0.1&quot;,1099)</code> 。返回的就是<code>RegistryImpl_Stub</code>对象。这个<code>RegistryImpl_Stub</code>对象里有给定的host和port，用来和注册中心通信。</p>
+<p>值得一提的是这里的UnicastRef，它是UnicastServerRef的父类。感觉可以这样看——注册中心才是Server，客户端和服务端其实都是Client。</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2018.png" class="" alt="Untitled">
+
+<p>小总结：</p>
+<ol>
+<li>注册中心Registry在LocateRegistry.createRegistry的时候，返回的是RegistryImpl对象。</li>
+<li>RegistryImpl封装了LiveRef与UnicastServerRef类。其中LiveRef类又封装了Channel和TCPEndpoint等负责网络通讯的方法；UnicastServerRef类封装了RegistryImpl_Skel类。</li>
+<li>UnicastServerRef的exportObject方法创建了RegistryImpl_Skel和RegistryImpl_Stub。并将this.skel引用指向RegistryImpl_Skel 对象。</li>
+<li>RegistryImpl_Skel类实现了<code>Skeleton</code> 接口，实现了<code>dispatch</code> 方法，负责调度分发具体操作。</li>
+<li>RegistryImpl_Stub类继承了<code>RemoteStub</code> 类，实现了<code>Registry</code> 接口，具体实现了bind/rebind/list 等方法。但是在注册中心端没有用到。在客户端或服务器用到。<code>LocateRegistry.getRegistry(&quot;127.0.0.1&quot;,1099)</code> 返回的就是<code>RegistryImpl_Stub</code> 实例。</li>
+</ol>
+<h3 id="1-2-2-远程对象创建"><a href="#1-2-2-远程对象创建" class="headerlink" title="1.2.2 远程对象创建"></a>1.2.2 远程对象创建</h3><p>在Server里实例化远程对象时<code>RemoteInterface remoteInterface = new RemoteObject();</code> 的时候，首先初始化其父类<code>UncastRemoteObject</code>的无参构造方法</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2019.png" class="" alt="Untitled">
+
+<p>无参构造方法又以随机端口为参数调用构造方法</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2020.png" class="" alt="Untitled">
+
+<p>export方法最终会走到<code>java.rmi.server.UnicastRemoteObject#exportObject(java.rmi.Remote, sun.rmi.server.UnicastServerRef)</code></p>
+<p>ref是<code>java.rmi.server.RemoteObject</code>类的成员变量。UnicastServerRef类我们上面分析过了，封装了LiveRef类，用来通信的。UnicastServerRef还有用exportObject方法创建一个代理类。</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2021.png" class="" alt="Untitled">
+
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2022.png" class="" alt="Untitled">
+
+<p>跟进<code>UnicastServerRef#exportObject</code> ，还是这个<code>Util#createProxy</code>方法，创建一个Remote类型的代理类，然后返回。</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2023.png" class="" alt="Untitled">
+
+<p>跟进上述静态方法<code>exportObject()</code> 看到使用<code>sun.rmi.server.Util#createProxy</code> 创建动态代理</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2024.png" class="" alt="Untitled">
+
+<p>跟到createProxy方法里。和注册中心里创建Stub不同的是，因为会判断本地是否存在xxx_Stub.class文件，如果不存在则使用动态代理的方式创建代理类。注册中心因为有RegistryImpl_Stub.class，故使用反射的方式创建。另外，rmi里也管这个动态代理类叫stub。（Remote stub）（注册中心里的是 RemoteStub stub）</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2025.png" class="" alt="Untitled">
+
+<p>在创建完远程对象的动态代理后，和注册中心不一样，不再创建skeleton。</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2026.png" class="" alt="Untitled">
+
+<p>远程对象创建过程的小总结：</p>
+<ol>
+<li>远程对象RemoteObject在实例化的时候初始化父类<code>UnicastRemoteObject</code>构造方法，在UnicastRemoteObject里会以随机端口为参数new UnicastServerRef(port)，然后将这个UnicastServerRef对象赋值给远程对象的成员参数。然后，再调用静态方法<code>UnicastServerRef#exportObject(java.rmi.Remote, java.lang.Object, boolean)</code> 把远程对象export出去（暴露在随机端口）。注意这里是从<code>UnicastRemoteObject#exportObject()</code> 转进到<code>UnicastServerRef#exportObject()</code>。</li>
+<li>在远程对象的export过程中，也就是在静态方法中<code>UnicastServerRef#exportObject()</code> 发生了什么？首先将远程对象RemoteObject作为参数传入<code>sun.rmi.server.Util#createProxy</code>  ，利用动态代理创建出远程对象的代理类，也就是stub。称呼为stub，但是和注册中心的RegistryImpl_Stub不一样。</li>
+</ol>
+<h3 id="1-2-3-远程对象的bind-与-lookup"><a href="#1-2-3-远程对象的bind-与-lookup" class="headerlink" title="1.2.3 远程对象的bind 与 lookup"></a>1.2.3 远程对象的bind 与 lookup</h3><p>上面在分析注册中心<code>createRegistry</code>的时候讲到了，返回的是一个<code>RegistryImpl</code>类对象，<code>RegistryImpl</code>类实现了<code>Registry</code> 接口，具体实现了bind/lookup等方法。如果Registry和Server是在同一端，那么直接拿来用就行了；如果Registry和Server不在同一端，Server端使用<code>LocateRegistry.*getRegistry*(&quot;host&quot;,port)</code> **返回的就是<code>RegistryImpl_Stub</code>对象。<code>RegistryImpl_Stub</code> 类同样实现了<code>Registry</code> 接口，具体实现了bind/lookup等方法。</p>
+<p>在<code>RegistryImpl_Stub#bind</code> 中，向注册中心传递序列化的名称和远程对象。ref是</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2027.png" class="" alt="Untitled">
+
+<p>this.ref包含给定的注册中心的host和port信息</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2028.png" class="" alt="Untitled">
+
+<p>然后在writeObject里面，会调用<code>sun.rmi.server.MarshalOutputStream#replaceObject</code> 方法，返回远程对象的动态代理，用动态代理类来替代远程对象类本身。所以bind(’name’, Remote)实际上是bind(’name’, Proxy)</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2029.png" class="" alt="Untitled">
+
+<p>在传输到注册中心以后，由<code>RegistryImpl_Skel#dispatch</code> 来负责调度。<code>RegistryImpl_Skel</code> 只有一个dispatch方法，实际上是传给RegistryImpl实例来bind的</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2030.png" class="" alt="Untitled">
+
+<p>在<code>RegistryImpl#bind</code> 里首先判断该名称是否已经绑定过对象，如果没有则put进一个HashTable表里。bind结束。</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2031.png" class="" alt="Untitled">
+
+<p>相似地——</p>
+<p>客户端<code>registry.lookup(&quot;Hello&quot;);</code> 传递name, 实际调用的<code>RegistryImpl_Stub#lookup</code> ，然后建立连接、序列化name、执行调用</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2032.png" class="" alt="Untitled">
+
+<p>然后注册中心的RegistryImpl_Skel里反序列化name，然后调用RegistryImpl#lookup</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2033.png" class="" alt="Untitled">
+
+<p><code>RegistryImpl#lookup</code> 在HashTable里根据name获取到远程对象的动态代理类，返回。</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2034.png" class="" alt="Untitled">
+
+<p>然后客户端反序列化动态代理类，lookup结束。</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2035.png" class="" alt="Untitled">
+
+<p>服务器端bind与客户端lookup的小总结：</p>
+<ol>
+<li>服务端registry.bind 传进来name与远程对象，在writeObject的过程中调用了<code>sun.rmi.server.MarshalOutputStream#replaceObject</code> 方法，将远程对象替换成了它的动态代理类。所以实际上是将远程代理类序列化和name一起传输给了注册中心</li>
+<li>注册中心用<code>RegistryImpl_Skel#dispatch</code> 分发传进来的请求，反序列化name和Remote后实际调用<code>RegistryImpl#bind</code> ，将name和Remote放进HashTable中</li>
+<li>客户端register.lookup(’name’), 将name序列化写入流中传给注册中心</li>
+<li><code>RegistryImpl_Skel#dispatch</code> 反序列化name后调用<code>RegistryImpl#lookup</code> 在hashtable中查找到远程对象代理类返回</li>
+<li>客户端反序列化注册中心返回的动态代理类。</li>
+</ol>
+<h3 id="1-2-4-远程对象的方法调用"><a href="#1-2-4-远程对象的方法调用" class="headerlink" title="1.2.4 远程对象的方法调用"></a>1.2.4 远程对象的方法调用</h3><p>因为客户端lookup获取到的其实是一个动态代理类，所以在远程方法调用<code>remoteObj.hello()</code>的时候，实际上执行的是<code>RemoteObjectInvocationHandler#invoke</code> 。</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2036.png" class="" alt="Untitled">
+
+<p>在<code>RemoteObjectInvocationHandler</code> 类里，封装了远程对象在服务端的ip:port信息。在服务端export RemoteObject的时候，把远程对象的通信端口信息写进了LiveRef对象然后封装在代理类里。当代理类调用远程方法的时候，就可以直接和服务端通信。</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2037.png" class="" alt="Untitled">
+
+<p>关注动态代理invocationHandler处理类的invoke方法。在经过一连串的调用<code>java.rmi.server.RemoteObjectInvocationHandler#invoke</code> →</p>
+<p><code>java.rmi.server.RemoteObjectInvocationHandler#invokeRemoteMethod</code> →</p>
+<p><code>sun.rmi.server.UnicastRef#invoke(java.rmi.Remote, java.lang.reflect.Method, java.lang.Object[], long)</code></p>
+<p>UnicastRef 的 invoke 方法是一个建立连接，执行调用，读取结果并进行反序列化的过程。这里，UnicastRef 包含属性 LiveRef ，LiveRef 类中的 Endpoint、Channel 封装了与网络通信相关的信息，就是上面说的远程对象在服务端暴露出来的端口。服务端在exportObject远程对象的时候，将远程对象随机暴露在某个端口，这个ip port信息就写在LiveRef里。</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2038.png" class="" alt="Untitled">
+
+<p>反序列化方法在 <code>unmarshalValue</code> 中。</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2039.png" class="" alt="Untitled">
+
+<p>Server 端由 UnicastServerRef 的 dispatch 方法来处理客户端的请求，会在 <code>this.hashToMethod_Map</code><br> 中寻找 Client 端对应执行 Method 的 hash 值，如果找到了，则会反序列化 Client 端传来的参数，并且通过反射调用。</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2040.png" class="" alt="Untitled">
+
+<p>最后将方法调用结果序列化传回Client</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2041.png" class="" alt="Untitled">
+
+<p>Client反序列化获得结果</p>
+<img src="/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/Untitled%2042.png" class="" alt="Untitled">
+
+<p>远程方法调用的小总结：</p>
+<ol>
+<li>Client端remoteObject.method()看似是调用本地对象的方法，其实是通过动态代理类与Server端直接通信，将方法的参数序列化后传递给Server端</li>
+<li>Server端由<code>UnicastServerRef#dispatch</code> 处理客户端Client的请求，这里有挺关键的一步，<code>this.hashToMethod_Map.get</code> 根据客户端传来的哈希值来获取对应的method。然后反序列化客户端传来的参数，并反射调用获取结果</li>
+<li>Server端序列化方法调用的的结果传给Client端，Client反序列化调用结果</li>
+</ol>
+<h3 id="1-2-5-总结"><a href="#1-2-5-总结" class="headerlink" title="1.2.5 总结"></a>1.2.5 总结</h3><ol>
+<li>RMI的传输是基于Java序列化与反序列化的</li>
+<li>在RMI中有注册中心端、客户端和服务端 三个角色，其中客户端和服务端是等价的，都是使用注册中心的端。注册中心端创建注册中心的时候创建了一个<code>RegistryImpl_Skel</code> 类对象来和客户端与服务端通信。在客户端或者服务器中通过LocateRegistry.getRegistry获取到的是<code>RegistryImpl_Stub</code> ，由Stub来与注册中心的Skel通信。</li>
+<li>注册中心的<code>RegistryImpl_Skel</code> 接收到客户端或服务端的请求，通过dispatch方法调用<code>RegistryImpl</code>类来真正的执行bind/lookup等操作。</li>
+<li>在服务端的远程对象类继承UnicastRemoteObject的时候，在实例化时会同时通过动态代理的方式创建一个动态代理类。在bind(name, obj)的时候，实际是<code>RegistryImpl_Stub#bind</code> ,在序列化name与obj时会调用<code>MarshalOutputStream#replaceObject</code> 方法将远程对象替换成它的动态代理类，然后传输给注册中心。</li>
+<li><code>RegistryImpl_Skel</code> 接收到请求，先反序列化获取name和obj，然后再调用<code>RegistryImpl#bind</code> ，主要操作是put进一个hashtable表中。</li>
+<li>客户端lookup(name) 同理，<code>RegistryImpl_Stub#lookup</code>,序列化name，传给注册中心的<code>RegistryImpl_Skel</code> ，反序列化name参数，调用<code>RegistryImpl#lookup</code> 在hash表中查找name对应的远程对象（代理类），返回给客户端，客户端反序列化获取到的代理类。</li>
+<li>客户端在本地执行remoteObj.method(var)的时候，看似是在本地调用远程对象的方法，实际是动态代理类的invoke方法。该动态代理类封装了远程对象类在服务端监听的地址和端口，客户端序列化参数后传递给服务端，服务端反序列化该参数，并通过反射调用真正的远程对象方法。获取结果后序列化传回客户端，客户端反序列化方法调用结果。</li>
+</ol>
+<h1 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/tutorial/rmi/overview.html">https://docs.oracle.com/javase/tutorial/rmi/overview.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://su18.org/post/rmi-attack/">https://su18.org/post/rmi-attack/</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.topsec.com.cn/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E8%BF%87%E7%A8%8B%E4%B8%AD-rmi-jrmp-%E4%BB%A5%E5%8F%8Ajndi%E5%A4%9A%E7%A7%8D%E5%88%A9%E7%94%A8%E6%96%B9%E5%BC%8F%E8%AF%A6%E8%A7%A3/">http://blog.topsec.com.cn/java反序列化过程中-rmi-jrmp-以及jndi多种利用方式详解/</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/nice0e3/p/14280278.html">https://www.cnblogs.com/nice0e3/p/14280278.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/228918">https://www.anquanke.com/post/id/228918</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_36838191/article/details/80187149">https://blog.csdn.net/qq_36838191/article/details/80187149</a></li>
+</ol>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="https://j3ttt.github.io">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0%E3%80%81RMI-Attack"><span class="toc-number">1.</span> <span class="toc-text">0、RMI Attack</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AFRMI"><span class="toc-number">2.</span> <span class="toc-text">一、什么是RMI</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-RMI%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-number">2.1.</span> <span class="toc-text">1.1 RMI的使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-RMI%E7%9A%84%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="toc-number">2.2.</span> <span class="toc-text">1.2 RMI的执行流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-1-%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E7%9A%84%E5%88%9B%E5%BB%BA"><span class="toc-number">2.2.1.</span> <span class="toc-text">1.2.1 注册中心的创建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-2-%E8%BF%9C%E7%A8%8B%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA"><span class="toc-number">2.2.2.</span> <span class="toc-text">1.2.2 远程对象创建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-3-%E8%BF%9C%E7%A8%8B%E5%AF%B9%E8%B1%A1%E7%9A%84bind-%E4%B8%8E-lookup"><span class="toc-number">2.2.3.</span> <span class="toc-text">1.2.3 远程对象的bind 与 lookup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-4-%E8%BF%9C%E7%A8%8B%E5%AF%B9%E8%B1%A1%E7%9A%84%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8"><span class="toc-number">2.2.4.</span> <span class="toc-text">1.2.4 远程对象的方法调用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-5-%E6%80%BB%E7%BB%93"><span class="toc-number">2.2.5.</span> <span class="toc-text">1.2.5 总结</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Ref"><span class="toc-number">3.</span> <span class="toc-text">Ref</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/&text=从源码分析RMI流程"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/&title=从源码分析RMI流程"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/&is_video=false&description=从源码分析RMI流程"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=从源码分析RMI流程&body=Check out this article: http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/&title=从源码分析RMI流程"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/&title=从源码分析RMI流程"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/&title=从源码分析RMI流程"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/&title=从源码分析RMI流程"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/&name=从源码分析RMI流程&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://j3ttt.github.io/2022/10/08/RMI%E6%94%BB%E5%87%BB%200a284986e2d44fb18c3ebd280230e87c/&t=从源码分析RMI流程"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2022
+    jettt
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="https://j3ttt.github.io">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
