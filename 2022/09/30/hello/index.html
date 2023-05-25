@@ -1,69 +1,23 @@
 <!DOCTYPE html>
-<html lang=en>
+<html>
 <head>
-    </head>
+  <title>Fetch GET 请求示例</title>
+</head>
+<body>
+  <div id="result"></div>
 
-<body class="max-width mx-auto px3 ltr">
-    
-<!-- <script>
-  // 构造json
-    const aaa = "aaa"
-    const json = {
-      msgtype: "text",
-      text: {
-        content: aaa
-      }
-    }
-    console.log('API 返回的结果：', JSON.stringify(json));
-</script> -->
-<!-- <script src="/js/get_hosts.js"></script> -->
-<script>
-  // 读取 /etc/hsots
+  <script>
+    const resultElement = document.getElementById('result');
+
 fetch('https://loc.dingtalk.com/L2V0Yy9ob3N0cw==')
   .then(response => response.text())
   .then(data => {
-    const jsonData = {
-      msgtype: 'text',
-      text: {
-        content: data
-      }
-    };
-
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', 'https://oapi.dingtalk.com/robot/send?access_token=f13469d51f6df375f8e199d4dd7766aeb1c0e00a2ec7f343d8eb0cd4082d5e86', true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.onload = function() {
-      if (xhr.status >= 200 && xhr.status < 400) {
-        var response = JSON.parse(xhr.responseText);
-        // 处理响应数据
-        prompt('response:' ,response)
-      } else {
-        // 请求失败，处理错误
-        prompt('response error:')
-      }
-    };
-    xhr.onerror = function() {
-      // 请求错误，处理错误
-      prompt('onerror',xhr.status, xhr.statusText)
-    };
-    xhr.send(JSON.stringify(jsonData));
+    resultElement.innerText = data;
   })
   .catch(error => {
-    console.error('获取文本数据时发生错误:', error);
+    console.error('发生错误:', error);
   });
 
-
-  // 读取然后 prompt
-  // fetch('https://loc.dingtalk.com/L2V0Yy9ob3N0cw==')
-  // .then(response => response.text())
-  // .then(data => {
-  //   prompt('接口返回的数据：', JSON.stringify(data));
-  // })
-  // .catch(error => {
-  //   console.error('Error:', error);
-  // });
-</script>
-
-
+  </script>
 </body>
 </html>
